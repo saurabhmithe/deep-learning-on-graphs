@@ -7,6 +7,8 @@ import tensorflow as tf
 from gcn.utils import *
 from gcn.models import GCN, MLP
 
+import pickle as pkl
+
 # Set random seed
 seed = 123
 np.random.seed(seed)
@@ -100,6 +102,16 @@ for epoch in range(FLAGS.epochs):
         break
 
 print("Optimization Finished!")
+
+# ".meta" files: containing the graph structure
+# ".data" files: containing the values of variables
+# ".index" files: identifying the checkpoint
+# "checkpoint" file: a protocol buffer with a list of recent checkpoints
+print("Saving model to model.mdl")
+saver = tf.train.Saver()
+sess.run(tf.global_variables_initializer())
+saver.save(sess, "./model.mdl")
+print("Model saved")
 
 # Testing
 test_cost, test_acc, test_duration = evaluate(features, support, y_test, test_mask, placeholders)
