@@ -2,7 +2,6 @@ from __future__ import division
 from __future__ import print_function
 
 import numpy as np
-from scipy.special import softmax
 
 import time
 import tensorflow as tf
@@ -89,7 +88,7 @@ for epoch in range(FLAGS.epochs):
     feed_dict.update({placeholders['dropout']: FLAGS.dropout})
 
     # Training step
-    outs = sess.run([model.opt_op, model.loss, model.accuracy], feed_dict=feed_dict)
+    outs = sess.run([model.opt_op, model.loss, model.accuracy, model.outputs], feed_dict=feed_dict)
 
     # Validation
     cost, acc, duration = evaluate(features, support, y_val, val_mask, placeholders)
@@ -122,6 +121,5 @@ print("Test set results:", "cost=", "{:.5f}".format(test_cost),
       "accuracy=", "{:.5f}".format(test_acc), "time=", "{:.5f}".format(test_duration))
 
 # get the embeddings and save
-X_embed = sess.run(model.outputs, feed_dict=feed_dict)
-X_embed_sm = sotmax(X_embed, axis=1)
-np.save('cora_embed', X_embed)
+# X_embed = sess.run(model.outputs, feed_dict=feed_dict)
+# np.save('cora_embed', X_embed)

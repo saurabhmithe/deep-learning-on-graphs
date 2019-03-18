@@ -1,11 +1,15 @@
 from __future__ import division
 from __future__ import print_function
 
+import numpy as np
+
 import time
 import tensorflow as tf
 
 from gcn.utils import *
 from gcn.models import GCN, MLP
+
+import pickle as pkl
 
 # Set random seed
 seed = 123
@@ -101,7 +105,21 @@ for epoch in range(FLAGS.epochs):
 
 print("Optimization Finished!")
 
+# ".meta" files: containing the graph structure
+# ".data" files: containing the values of variables
+# ".index" files: identifying the checkpoint
+# "checkpoint" file: a protocol buffer with a list of recent checkpoints
+print("Saving model to model.mdl")
+saver = tf.train.Saver()
+sess.run(tf.global_variables_initializer())
+saver.save(sess, "./model.mdl")
+print("Model saved")
+
 # Testing
 test_cost, test_acc, test_duration = evaluate(features, support, y_test, test_mask, placeholders)
 print("Test set results:", "cost=", "{:.5f}".format(test_cost),
       "accuracy=", "{:.5f}".format(test_acc), "time=", "{:.5f}".format(test_duration))
+
+# get the embeddings and save
+X_embed = sess.run(model.outputs, feed_dict=feed_dict)
+np.save('cora_embed', X_embed)

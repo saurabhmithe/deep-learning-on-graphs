@@ -41,16 +41,24 @@ def load_data(dataset_str):
     :param dataset_str: Dataset name
     :return: All data input files loaded (as well the training/test data).
     """
+    # file extensions for dataset files
     names = ['x', 'y', 'tx', 'ty', 'allx', 'ally', 'graph']
+
+    # read pickled data from the dataset files, convert to objects and store in the objects list
     objects = []
     for i in range(len(names)):
+        # open each file with the selected dataset name and the extension
         with open("data/ind.{}.{}".format(dataset_str, names[i]), 'rb') as f:
+            # check the python version and use the pickle load function accordingly
+            # read from the data set, convert into an object and append to the objects list
             if sys.version_info > (3, 0):
                 objects.append(pkl.load(f, encoding='latin1'))
             else:
                 objects.append(pkl.load(f))
 
+    # create a tuple of each object from the list of objects to make them immutable
     x, y, tx, ty, allx, ally, graph = tuple(objects)
+
     test_idx_reorder = parse_index_file("data/ind.{}.test.index".format(dataset_str))
     test_idx_range = np.sort(test_idx_reorder)
 
